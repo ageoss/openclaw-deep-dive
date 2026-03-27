@@ -634,3 +634,34 @@ Capability Token的有效期绑定到Node的WebSocket连接生命周期，连接
 ---
 
 *本文档基于源码分析，涵盖Canvas Host、A2UI集成、移动端CanvasController等核心组件。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Canvas Capability（全新）
+
+`src/gateway/canvas-capability.ts` — canvas 能力声明和管理：
+- 声明 Gateway 支持的 canvas 能力
+- 与 Control UI 集成
+
+### CSP Inline Script Hashes（全新）
+
+`feat(csp): support inline script hashes in Control UI CSP`：
+- `src/gateway/control-ui-csp.ts` 新增 inline script hashes 支持
+- 允许特定内联脚本通过 CSP 检查，无需使用 `unsafe-inline`
+- 提升 Control UI 的安全性
+
+### Control UI 大幅更新
+
+`feat(ui): Control UI polish — skills revamp, markdown preview, agent workspace, macOS config tree`：
+- **Skills revamp** — Skills 系统重构，支持 ClawHub 安装
+- **Markdown preview** — 消息 Markdown 预览
+- **Agent workspace** — Agent 工作区视图
+- **macOS config tree** — macOS 配置树形视图
+
+### Canvas Host 新增
+
+`src/canvas-host/` 目录实现 canvas 宿主：
+- 管理 canvas 实例的生命周期
+- 与 Gateway 的 WebSocket 通信集成

@@ -839,4 +839,69 @@ graph TB
 
 ---
 
-*文档版本：2026-03-11 | By Leon*
+*文档版本：2026-03-11（更新：2026-03-24）| By Leon*
+
+---
+
+## 最新更新（2026-03-24）
+
+### OpenAI 兼容 API 端点（全新）
+
+`feat(gateway): add missing OpenAI-compatible endpoints` + `feat(gateway): make openai compatibility agent-first`
+
+新增三个 OpenAI 兼容 HTTP 端点：
+
+| 端点 | 文件 | 说明 |
+|------|------|------|
+| `POST /v1/chat/completions` | `src/gateway/openai-http.ts` | Agent-first 模式，支持流式和非流式 |
+| `GET /v1/models` | `src/gateway/models-http.ts` | 返回可用模型列表 |
+| `POST /v1/embeddings` | `src/gateway/embeddings-http.ts` | 嵌入向量生成 |
+
+`openai-http.ts` 关键特性：
+- Agent-first 模式：请求直接路由到 Agent 而非简单转发
+- 支持图片输入（最多 8 张，总计 20MB）
+- 支持 SSE 流式响应
+- 通过 `resolveOpenAiCompatModelOverride()` 解析模型覆盖
+
+### Talk Speak RPC（全新）
+
+`feat(gateway): add talk speak rpc`：
+- 新增 `talk.speak` RPC 方法（`src/gateway/server.talk-config.ts`）
+- 允许通过 Gateway RPC 触发 TTS 语音合成
+- 与 Voice Wake 系统集成
+
+### WebChat 增强
+
+- `feat(gateway): persist webchat inbound images to disk` — 入站图片持久化到磁盘（`src/gateway/server-methods/chat.ts`）
+- `feat(gateway): allow webchat port override` — 支持端口覆盖配置
+
+### CSP 增强
+
+`feat(csp): support inline script hashes in Control UI CSP`：
+- `src/gateway/control-ui-csp.ts` 新增 inline script hashes 支持
+- 允许特定内联脚本通过 CSP 检查，无需使用 `unsafe-inline`
+
+### Agent Events 广播（全新）
+
+`feat: broadcast agent events over control channel` + `feat: stream tool/job events over control channel`：
+- `src/gateway/server-broadcast.ts` — 通过 control channel 广播 agent 事件
+- `feat: forward tool/assistant events to agent bus` — 工具/助手事件转发到 agent bus
+- `feat: emit job-state events from rpc` — RPC 触发 job-state 事件
+
+### Canvas Capability（全新）
+
+`src/gateway/canvas-capability.ts` — canvas 能力声明和管理
+
+### Control UI 大幅更新
+
+`feat(ui): Control UI polish — skills revamp, markdown preview, agent workspace, macOS config tree`：
+- Skills 系统重构（skills revamp）
+- Markdown 预览
+- Agent workspace 视图
+- macOS 配置树
+
+### Discovery Target 集中处理
+
+`refactor(gateway): centralize discovery target handling`：
+- `src/gateway/server-discovery-runtime.ts` — 集中处理 discovery target
+- 统一 discovery 逻辑，减少重复代码

@@ -569,3 +569,32 @@ async function resizeImage(image: Buffer): Promise<Buffer> {
 - [Pi-Coding-Agent README](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent)
 - [官方文档](https://shittycodingagent.ai)
 - [Discord 社区](https://discord.com/invite/3cU7Bz4UPx)
+
+---
+
+## 最新更新（2026-03-24）
+
+### 与 OpenClaw 的关系（重要更正）
+
+OpenClaw **直接使用** `@mariozechner/pi-coding-agent`（不是"没有直接使用"），通过 `src/agents/pi-embedded-runner/` 目录下的文件嵌入式调用 `createAgentSession()`。
+
+### pi-tools 新增工具
+
+`src/agents/pi-tools.ts` 新增：
+
+**Host-Edit 工具**（`src/agents/pi-tools.host-edit.ts`）：
+- 宿主机文件编辑工具（区别于沙箱内的 edit 工具）
+- 路径解析支持 `~` 展开
+
+**Workspace-Only 模式**：
+- 限制工具只能访问 workspace 目录
+- `pi-tools.workspace-only-false.test.ts` — 测试非 workspace-only 模式
+
+**Safe-Bins 检查**（`src/agents/pi-tools.safe-bins.ts`）：
+- 安全二进制文件白名单检查
+
+### pi-tools 工具别名（新增）
+
+`src/agents/pi-tools.create-openclaw-coding-tools.adds-claude-style-aliases-*.test.ts`：
+- 为 pi-coding-agent 工具添加 Claude 风格的别名
+- 支持 `b`（bash）、`d`（diff）、`f`（file）等简写别名

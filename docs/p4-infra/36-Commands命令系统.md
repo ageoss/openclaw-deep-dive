@@ -803,3 +803,59 @@ export function formatDoctorResult(result: DoctorResult): string {
 ---
 
 *本文档基于源码分析，涵盖命令系统的架构、Agent 命令执行、Health Check、Doctor 诊断、Auth Choice 以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Agents 命令子系统（全新）
+
+`src/commands/agents/` 目录实现完整的 agents 管理命令：
+
+- `agents.commands.add.ts` — 添加 agent
+- `agents.commands.bind.ts` — 绑定 agent 到渠道
+- `agents.commands.delete.ts` — 删除 agent
+- `agents.commands.identity.ts` — 管理 agent 身份
+- `agents.commands.list.ts` — 列出所有 agents
+- `agents.bindings.ts` — 绑定管理
+- `agents.config.ts` — agent 配置
+- `agents.providers.ts` — agent provider 管理
+
+### Doctor 命令重构
+
+`refactor: clarify doctor repair flow`：
+- `src/commands/doctor/` 目录重构
+- `fix(doctor): honor --fix in non-interactive mode` — 非交互模式支持 `--fix`
+- `fix(doctor): skip service config repairs during updates` — 更新时跳过服务配置修复
+- `fix: Preserve no-restart during update doctor fixes` — 更新修复时保留 no-restart 设置
+
+### Gateway Status 命令（全新）
+
+`src/commands/gateway-status/` — 新增 gateway 状态查询命令
+
+### Models 命令（全新）
+
+`src/commands/models/` — 新增模型管理命令：
+- 列出可用模型
+- 查看模型详情
+- 切换默认模型
+
+### Onboard Non-Interactive（全新）
+
+`src/commands/onboard-non-interactive/` — 非交互式 onboarding 命令：
+- 适用于 CI/CD 环境
+- 自动完成初始化配置
+
+### /tools 命令（全新）
+
+`feat: add /tools runtime availability view`：
+- 展示当前运行时所有可用工具
+- 按 section 分组（Files/Runtime/Web/Memory/Sessions/UI/Messaging/Automation/Nodes/Agents/Media）
+- 显示每个工具的 profile 归属和实时可用状态
+
+### CLI 新增功能
+
+- `feat(cli): support targeting running containerized openclaw instances` — 支持连接容器化实例
+- `feat(cli): add stdin/stdout rpc loop for agent sends` — stdin/stdout RPC 循环
+- `feat(cli): add agent send command and wire through XPC` — agent send 命令
+- `feat(cli): unify relay providers and heartbeat flag` — 统一 relay provider 和 heartbeat 标志

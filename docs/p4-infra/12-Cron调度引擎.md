@@ -627,4 +627,34 @@ for (let attempt = 0; attempt <= RENAME_MAX_RETRIES; attempt++) {
 
 ---
 
-*文档版本：2026-03-11 | By Leon*
+*文档版本：2026-03-11（更新：2026-03-24）| By Leon*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Heartbeat Prompt Suppression（重要修复）
+
+`fix: land cron heartbeat prompt suppression` + `fix(agents): suppress heartbeat prompt for cron-triggered embedded runs`：
+- Cron 触发的嵌入式运行不再发送 heartbeat prompt
+- `src/cron/heartbeat-policy.ts` — heartbeat 策略
+- `src/cron/service.heartbeat-ok-summary-suppressed.test.ts` — 验证 heartbeat 摘要被抑制
+
+### Cron Schedule 和 Test Runner Helpers（重构）
+
+`refactor: extract cron schedule and test runner helpers`：
+- `src/cron/schedule.ts` — 调度逻辑提取
+- `src/cron/stagger.ts` — 错峰调度（防止同时触发）
+
+### Isolated Agent 新增功能
+
+`src/cron/isolated-agent.ts` 新增：
+- `isolated-agent.auth-profile-propagation.ts` — auth profile 传播
+- `isolated-agent.subagent-model.ts` — 子代理模型支持
+- `isolated-agent.lane.ts` — 执行通道管理
+
+### Session Reaper（全新）
+
+`src/cron/session-reaper.ts` — 会话清理器：
+- 定期清理过期的 cron 会话
+- 防止会话文件无限积累

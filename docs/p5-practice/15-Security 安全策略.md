@@ -798,3 +798,57 @@ A：外部内容包装是系统提示的一部分。当用户发送邮件、webh
 ---
 
 *本文档基于源码分析，涵盖密码安全、内容安全、SSRF 防护、访问控制、安全审计等核心组件。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Sandbox 系统大幅扩展
+
+`src/agents/sandbox/` 目录新增大量沙箱模块：
+
+- `sandbox.ts` — 沙箱核心（`resolveSandboxContext()`）
+- `sandbox-agent-config.ts` — agent 特定沙箱配置
+- `sandbox-create-args.ts` — 沙箱创建参数
+- `sandbox-explain.ts` — 沙箱配置解释（用于 UI 展示）
+- `sandbox-media-paths.ts` — 媒体路径沙箱
+- `sandbox-merge.ts` — 沙箱配置合并
+- `sandbox-paths.ts` — 路径沙箱
+- `sandbox-skills.ts` — skills 沙箱
+- `sandbox-tool-policy.ts` — 工具策略沙箱
+
+### Tool Policy Pipeline（全新）
+
+`src/agents/tool-policy-pipeline.ts` 实现可组合的工具策略管道（详见 P2 tools-overview 更新）。
+
+### Path Policy（全新）
+
+`src/agents/path-policy.ts` — 路径访问策略：
+- 控制 agent 可访问的文件系统路径
+- 支持 workspace-only 模式
+
+### CSP 增强
+
+`feat(csp): support inline script hashes in Control UI CSP`：
+- `src/gateway/control-ui-csp.ts` 新增 inline script hashes 支持
+- 允许特定内联脚本通过 CSP 检查，无需使用 `unsafe-inline`
+
+### /allowlist 权限收紧
+
+`fix: require operator.admin for mutating internal /allowlist commands`：
+- `/allowlist` 的修改操作现在需要 `operator.admin` 权限
+- 防止非管理员用户修改 allowlist
+
+### Config Clobber Forensics（全新）
+
+`fix: add config clobber forensics`：
+- 检测配置文件被意外覆盖的情况
+- 记录覆盖事件的详细信息用于诊断
+
+### Security 模块新增
+
+`src/security/` 目录新增：
+- `skill-scanner.ts` — skill 安全扫描
+- `temp-path-guard.ts` — 临时路径守卫
+- `windows-acl.ts` — Windows ACL 支持
+- `mutable-allowlist-detectors.ts` — 可变 allowlist 检测器

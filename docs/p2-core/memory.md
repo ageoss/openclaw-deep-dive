@@ -1035,6 +1035,73 @@ export interface ContextEngine {
 
 ---
 
-*文档版本：v1.0*
-*最后更新：2025-03-10*
+*文档版本：v1.0（更新：v1.1 2026-03-24）*
+*最后更新：2026-03-24*
 *分析者：Leon*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Pluggable System Prompt Section（全新）
+
+`feat(memory): pluggable system prompt section for memory plugins`
+
+`src/memory/prompt-section.ts` 实现了可插拔的系统提示节机制：
+
+```typescript
+// 模块级单例 —— 只有一个 memory plugin 可以激活（独占槽位）
+registerMemoryPromptSection(builder: MemoryPromptSectionBuilder): void
+buildMemoryPromptSection(params: { availableTools: Set<string>; citationsMode? }): string[]
+getMemoryPromptSectionBuilder(): MemoryPromptSectionBuilder | undefined
+restoreMemoryPromptSection(builder): void  // 用于插件缓存命中时恢复
+clearMemoryPromptSection(): void           // 插件重载和测试时清除
+```
+
+设计要点：独占槽位（exclusive slot）设计，同一时刻只有一个 memory plugin 可以注册系统提示节，避免多个 memory plugin 的提示内容冲突。
+
+### Embedding 后端大幅扩展
+
+`src/memory/` 目录新增多种 embedding 后端：
+
+| 文件 | 后端 |
+|------|------|
+| `embeddings-gemini.ts` | Google Gemini |
+| `embeddings-mistral.ts` | Mistral AI |
+| `embeddings-ollama.ts` | Ollama（本地） |
+| `embeddings-voyage.ts` | Voyage AI |
+| `embeddings-openai.ts` | OpenAI |
+| `embeddings-remote-client.ts` + `embeddings-remote-fetch.ts` | 远程 HTTP |
+| `embeddings-remote-provider.ts` | 远程 provider 抽象 |
+
+### 批量嵌入系统（全新）
+
+`src/memory/batch-*.ts` 实现批量嵌入处理：
+
+- `batch-runner.ts` — 批量运行器（并发控制）
+- `batch-provider-common.ts` — provider 公共接口
+- `batch-embedding-common.ts` — 嵌入公共逻辑
+- `batch-gemini.ts`, `batch-http.ts`, `batch-openai.ts`, `batch-voyage.ts` — 各 provider 实现
+- `batch-output.ts` — 输出格式化
+- `batch-status.ts` — 状态追踪
+- `batch-upload.ts` — 上传处理
+- `batch-utils.ts` — 工具函数
+- `batch-error-utils.ts` — 错误处理
+
+### 高级检索算法（全新）
+
+- `hybrid.ts` — 混合搜索（向量搜索 + 关键词搜索融合）
+- `mmr.ts` — 最大边际相关性（Maximum Marginal Relevance，减少结果冗余）
+- `temporal-decay.ts` — 时间衰减（近期记忆权重更高）
+- `qmd-manager.ts` + `qmd-process.ts` + `qmd-query-parser.ts` + `qmd-scope.ts` — 查询多样化（Query Multi-Diversity）
+- `query-expansion.ts` — 查询扩展（提升召回率）
+
+### 其他新增模块
+
+- `multimodal.ts` — 多模态记忆支持
+- `node-llama.ts` — 本地 LLM 嵌入（node-llama-cpp）
+- `sqlite-vec.ts` — SQLite 向量扩展
+- `remote-http.ts` — 远程 HTTP 记忆后端
+- `secret-input.ts` — 密钥输入处理
+- `status-format.ts` — 状态格式化输出
+- `embedding-chunk-limits.ts` + `embedding-input-limits.ts` + `embedding-model-limits.ts` — 嵌入限制管理

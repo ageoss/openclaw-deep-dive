@@ -584,3 +584,9 @@ export function renderMarkdownWithMarkers(ir: MarkdownIR, options: RenderOptions
 ---
 
 *本文档基于源码分析，涵盖 Markdown 渲染系统的架构、中间表示层、边界栈算法、表格渲染、平台转换以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+本章节内容相对稳定，主要变化体现在与新功能的集成上。详见相关章节（Gateway、Plugin SDK、Commands）的更新说明。

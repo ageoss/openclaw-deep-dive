@@ -460,3 +460,46 @@ export type AcpSessionStatus = {
 ---
 
 *本文档基于源码分析，涵盖 ACP 控制平面的架构、类型系统、策略执行、会话管理、运行时缓存、身份协调和持久化绑定。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### ACP Spawn 机制（全新）
+
+`src/agents/acp-spawn.ts` 实现 ACP spawn 机制：
+- 允许 ACP 会话创建子进程（subagent）
+- 通过 `AcpSpawnRuntimeCloseHandle` 管理 spawn 生命周期
+- 与 `cleanupFailedAcpSpawn()` 配合处理失败清理
+
+`src/agents/acp-spawn-parent-stream.ts` 实现父流式接口：
+- 子进程通过流式接口与父进程通信
+- 支持 ACP 会话的嵌套执行
+
+### ACP Binding Architecture Guardrail（全新）
+
+`src/agents/acp-binding-architecture.guardrail.ts` — 绑定架构安全护栏：
+- 防止 ACP 绑定架构违规
+- 在测试中验证绑定架构约束
+
+### ACPX Extension（全新）
+
+`extensions/acpx/` — ACP 本地运行时扩展：
+- `src/config.ts` — 配置管理
+- `src/ensure.ts` — 确保运行时就绪
+- `src/runtime.ts` — 运行时实现
+- `src/service.ts` — 服务层
+- `runtime-api.ts` — 运行时 API
+- `skills/` — ACPX skills
+
+### ACP 控制平面新增
+
+`src/acp/control-plane/` 目录新增：
+- `spawn.ts` — spawn 管理（`cleanupFailedAcpSpawn`, `AcpSpawnRuntimeCloseHandle`）
+- `manager.ts` — ACP session manager（`getAcpSessionManager()`）
+
+### ACP Runtime 新增
+
+`src/acp/runtime/` 目录新增：
+- `session-identifiers.ts` — session 标识符（`resolveAcpSessionCwd`, `resolveAcpThreadSessionDetailLines`）
+- `types.ts` — 运行时类型（`AcpRuntimeSessionMode`）

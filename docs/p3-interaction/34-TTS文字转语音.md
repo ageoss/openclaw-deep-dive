@@ -778,3 +778,47 @@ export async function edgeTTS(params: {
 ---
 
 *本文档基于源码分析，涵盖 TTS 系统的架构、多提供商支持、自动模式、指令解析、文本摘要、用户偏好以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Speech Provider 注册体系重构（全新）
+
+`src/tts/provider-registry.ts` 实现插件化提供商注册系统：
+- 内置提供商：`buildOpenAISpeechProvider`、`buildElevenLabsSpeechProvider`、`buildMicrosoftSpeechProvider`
+- 支持通过 plugin registry 注册第三方提供商
+- `normalizeSpeechProviderId()` — `"edge"` 别名映射到 `"microsoft"`
+
+### Microsoft 语音提供商（全新）
+
+`extensions/microsoft/speech-provider.ts`：
+- `listMicrosoftVoices()` — 从 Bing Speech API 获取声音列表（带 DRM token）
+- 支持 `audio-24khz-48kbitrate-mono-mp3` 等格式
+- `feat(tts): add microsoft voice listing`
+
+### ElevenLabs 独立 Extension
+
+`extensions/elevenlabs/speech-provider.ts`：
+- `listElevenLabsVoices()` — 从 ElevenLabs API 获取声音列表
+- 支持 `eleven_multilingual_v2`、`eleven_turbo_v2_5`、`eleven_monolingual_v1` 模型
+- `feat(plugins): expand speech runtime ownership`
+
+### In-Memory Speech Synthesis（全新）
+
+`feat(tts): add in-memory speech synthesis`：
+- 支持内存中的语音合成（不写磁盘）
+- 用于实时语音流式传输
+
+### Speech Voice Metadata 丰富
+
+`feat(tts): enrich speech voice metadata`：
+- `SpeechVoiceOption` 新增 `category`、`description` 字段
+- 提供更丰富的声音元数据，便于用户选择
+
+### 新增核心文件
+
+- `src/tts/tts-auto-mode.ts` — 自动模式规范化，`TTS_AUTO_MODES = {"off", "always", "inbound", "tagged"}`
+- `src/tts/tts-config.ts` — TTS 配置解析（`resolveConfiguredTtsMode()`，支持 `messages.tts.mode` 配置）
+- `src/tts/tts-core.ts` — 核心 TTS 实现（ElevenLabs/OpenAI/Edge 实际调用逻辑）
+- `src/tts/edge-tts-validation.ts` — Edge TTS 验证

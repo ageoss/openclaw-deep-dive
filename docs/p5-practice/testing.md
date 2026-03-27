@@ -798,3 +798,38 @@ const chunks = createTestChunks([1, 2, 3, 4, 5], 2);
 ---
 
 *本文档基于源码分析，涵盖测试工具的架构、端口管理、临时环境、Channel 插件测试、时间控制、NPM 断言、仓库扫描以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### E2E 测试大幅扩展
+
+新增大量 e2e 测试：
+- `pi-embedded-runner.e2e.test.ts` — pi 嵌入式运行器 e2e
+- `cli-runner.bundle-mcp.e2e.test.ts` — CLI runner bundle MCP e2e
+- `pi-embedded-runner.run-embedded-pi-agent.auth-profile-rotation.e2e.test.ts` — auth profile 轮换 e2e
+- `model-fallback.run-embedded.e2e.test.ts` — 模型 fallback e2e
+- `pi-tools.before-tool-call.integration.e2e.test.ts` — 工具调用前 integration e2e
+
+### Live Test Helpers（全新）
+
+`src/agents/live-test-helpers.ts` — 实时测试辅助工具：
+- 支持 live 模式测试（`OPENCLAW_LIVE_TEST=1`）
+- 提供真实 API 调用的测试框架
+
+### Subagent 测试覆盖
+
+新增大量 subagent 相关测试：
+- `openclaw-tools.subagents.*.test.ts` — subagent 工具测试（scope/spawn/lifecycle/model/depth-limits 等）
+- `subagent-registry.*.test.ts` — 注册表测试（persistence/nested/steer-restart 等）
+
+### Vitest 配置扩展
+
+新增多个 vitest 配置文件：
+- `vitest.channels.config.ts` — 渠道测试配置
+- `vitest.extensions.config.ts` — extensions 测试配置
+- `vitest.gateway.config.ts` — gateway 测试配置
+- `vitest.live.config.ts` — live 测试配置
+- `vitest.performance-config.ts` — 性能测试配置
+- `vitest.scoped-config.ts` — 范围测试配置

@@ -859,4 +859,21 @@ Client Tool 的 "pending" 模式核心要点：
 
 ---
 
-*最后更新：2026-03-10*
+*最后更新：2026-03-10（更新：2026-03-24）*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Library 模式（全新）
+
+`src/library.ts` 新增库模式入口，允许 OpenClaw 作为库被其他 Node.js 应用嵌入调用：
+- 不启动 Gateway 或任何网络服务
+- 直接通过编程 API 调用 Agent
+- 适用于构建自定义 AI 应用或集成到现有系统
+
+### Tool 执行流程变化
+
+- 新增 `session-tool-result-guard.ts` — 工具结果守卫，防止敏感信息泄露
+- 新增 `tool-images.ts` — 工具返回图片的处理（image sanitization）
+- 新增 `tool-summaries.ts` — 工具执行摘要格式化

@@ -628,3 +628,111 @@ graph LR
 ```
 
 **关键要点：** 扩展性分四个维度，但优先级不同。功能扩展（Plugin/Custom Tools/Channels）是当前版本的主要扩展路径，成本最低。水平扩展（多 Gateway + 负载均衡）需要解决会话粘性问题——因为 Pi Sessions 是本地文件，多实例间需要共享存储才能真正水平扩展。垂直扩展和数据扩展（向量分布式）更多是面向未来的演进方向，当前单机部署场景下意义有限。
+
+---
+
+## 最新更新（2026-03-24）
+
+### 规模跃升：从 30 个扩展到 85 个扩展
+
+`extensions/` 目录已从约 30 个扩展扩展至 **85 个**，覆盖三大类：
+
+**新增渠道（13 个）**：msteams、feishu、matrix、synology-chat、nextcloud-talk、irc、nostr、tlon、twitch、zalo/zalouser、googlechat、mattermost、bluebubbles
+
+**新增 Provider（25+ 个）**：anthropic-vertex、xai、minimax、mistral、chutes、byteplus、cloudflare-ai-gateway、groq、huggingface、kilocode、kimi-coding、nvidia、opencode、openrouter、perplexity、qianfan、sglang、together、venice、vercel-ai-gateway、vllm、volcengine、xiaomi、zai 等
+
+**新增能力扩展**：image-generation（图像生成）、web-search（统一 Web 搜索抽象，含 brave/firecrawl/exa/duckduckgo/tavily）、speech（Microsoft/ElevenLabs 独立 Extension）
+
+### 架构新增：Subagent 系统
+
+Agent 运行时新增 Subagent 支持，主 Agent 可通过 `subagents` 工具派生子 Agent 并行执行任务：
+
+```
+主 Agent → subagents 工具 → 子 Agent 实例（独立会话/工具权限）
+                          → agents_list 工具（查询运行中的 Agent）
+                          → sessions_yield 工具（让出会话控制权）
+```
+
+子 Agent 拥有独立的工具权限集合，通过 Tool Policy Pipeline 控制可用工具范围。
+
+### 架构新增：OpenAI 兼容 API 端点
+
+Gateway 新增 OpenAI 兼容 HTTP 端点（`/v1/chat/completions` 等），允许任何支持 OpenAI API 的客户端直接接入 OpenClaw，无需修改客户端代码。
+
+### 架构新增：macOS Companion App
+
+macOS 客户端从普通 App 升级为 Companion App，新增：
+- Voice Wake（语音唤醒）
+- Push-to-Talk（按键说话）
+- 菜单栏常驻
+- 实例标签页（多 Gateway 实例管理）
+- Relay 进程管理器（管理本地 Gateway 进程生命周期）
+
+### 架构新增：Library 模式
+
+新增 `src/library.ts` 入口，支持将 OpenClaw 作为 Node.js 库嵌入其他应用，无需启动完整 Gateway 进程。
+
+### 架构新增：ClawHub 插件安装流程
+
+新增 ClawHub 插件市场集成，支持通过 `/install` 命令从 ClawHub 安装插件，统一了 Hook Pack、MCP、LSP 的安装入口。
+
+### 架构新增：Auth Profiles 多 Key 轮换
+
+密钥管理新增 Auth Profiles 系统，支持多 API Key 配置与自动轮换，解决单 Key 限速问题。
+
+### 更新后的系统全景图
+
+```mermaid
+graph TB
+    subgraph "用户交互层"
+        A1[Web UI] --> B1[Gateway]
+        A2[iOS App] --> B1
+        A3[macOS Companion App] --> B1
+        A4[CLI] --> B1
+        A5[OpenAI 兼容客户端] --> B1
+    end
+
+    subgraph "消息通道层（20+ 渠道）"
+        B1 --> C1[Telegram/Discord/Slack]
+        B1 --> C2[LINE/iMessage/Signal]
+        B1 --> C3[WhatsApp/WeChat]
+        B1 --> C4[msteams/feishu/matrix]
+        B1 --> C5[IRC/Nostr/Twitch]
+        B1 --> C6[Mattermost/BlueBubbles]
+    end
+
+    subgraph "核心引擎层"
+        B1 --> D1[Agent Core]
+        D1 --> D2[Memory System]
+        D1 --> D3[Tool System]
+        D1 --> D4[Context Engine]
+        D1 --> D5[Subagent System]
+    end
+
+    subgraph "能力层（85 个 Extensions）"
+        D3 --> E1[Browser Automation]
+        D3 --> E2[Image Generation]
+        D3 --> E3[Web Search]
+        D3 --> E4[TTS/Speech]
+        D3 --> E5[Media Understanding]
+    end
+
+    subgraph "Provider 层（30+ 个）"
+        D1 --> P1[Anthropic/OpenAI/Gemini]
+        D1 --> P2[Groq/Mistral/xAI]
+        D1 --> P3[OpenRouter/Together/Perplexity]
+        D1 --> P4[本地 vLLM/Ollama/sglang]
+    end
+
+    subgraph "基础设施层"
+        F1[Cron] --> D1
+        F2[macOS Companion/Daemon] --> B1
+        F3[Auth Profiles] --> D1
+        F4[Security/Sandbox] --> D1
+    end
+
+    style A3 fill:#e1f5ff
+    style D5 fill:#ffe1e1
+    style B1 fill:#fff4e1
+    style F3 fill:#f0e1ff
+```

@@ -335,3 +335,22 @@ export function* parsePartialJSON(json: string): Generator<any> {
 
 - [Pi-AI README](https://github.com/badlogic/pi-mono/tree/main/packages/ai)
 - [Provider 实现](https://github.com/badlogic/pi-mono/tree/main/packages/ai/src/providers)
+
+---
+
+## 最新更新（2026-03-24）
+
+### OpenClaw 中的 Pi-AI 集成变化
+
+`src/agents/pi-model-discovery.ts` 实现模型发现：
+- 通过 `InMemoryAuthStorageBackend` 隔离不同 Agent 的认证状态（内存中，不写磁盘）
+- `resolvePiCredentialMapFromStore()` — 从 auth-profiles store 解析凭据映射
+- `scrubLegacyStaticAuthJsonEntries()` — 清理旧版静态 auth.json 条目
+
+`src/agents/pi-auth-credentials.ts` 管理认证凭据：
+- 将 auth-profiles store 中的凭据转换为 Pi SDK 格式
+- 支持多 provider 的凭据映射
+
+### 新增 Provider 支持
+
+通过 extensions 体系，Pi-AI 现在支持 30+ 个 provider（详见 P2 27-Providers 更新）。

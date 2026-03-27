@@ -833,3 +833,31 @@ const taskConfig = {
 ---
 
 *本文档基于源码分析，涵盖守护进程系统的架构、平台实现、配置生成、服务标签以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### macOS Companion App（全新）
+
+`apps/macos/` 新增 macOS companion app：
+- 菜单栏图标（动画耳朵/腿部摆动）
+- Voice Wake 语音唤醒（麦克风选择、语言选择）
+- Push-to-Talk 热键
+- 实例标签页（多实例发现）
+- Relay 进程管理器（子进程管理）
+- Tools tab installers
+- Agent events debug window
+
+### Relay 进程管理
+
+`feat(mac): add child relay process manager`：
+- macOS app 管理 relay 子进程
+- 支持 relay 项目根目录配置
+- 显示 relay 运行状态指示器
+
+### Heartbeat Toggle（全新）
+
+`feat: add heartbeat toggle with live RPC control`：
+- 支持通过 RPC 动态开关 heartbeat
+- `feat(cli): unify relay providers and heartbeat flag` — CLI 统一 heartbeat 标志

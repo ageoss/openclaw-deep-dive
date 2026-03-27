@@ -772,3 +772,9 @@ export async function readChannelAllowFromStore(
 ---
 
 *本文档基于源码分析，涵盖Pairing配对系统的完整架构、配对码生成、并发控制、URL解析、认证流程以及多账号支持。*
+
+---
+
+## 最新更新（2026-03-24）
+
+本章节内容相对稳定，主要变化体现在与新功能的集成上。详见相关章节（Gateway、Plugin SDK、Commands）的更新说明。

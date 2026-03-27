@@ -681,3 +681,48 @@ agents:
 ---
 
 *本文档持续更新中...*
+
+---
+
+## 最新更新（2026-03-24）
+
+### 新增工具（src/agents/tool-catalog.ts）
+
+**Media Section 新增**：
+
+| 工具 ID | 描述 | Section | Profiles |
+|---------|------|---------|---------|
+| `image_generate` | 图像生成 | `media` | `["coding"]` |
+| `tts` | 文字转语音 | `media` | `[]` |
+
+**Sessions Section 新增**：
+
+| 工具 ID | 描述 | Section | Profiles |
+|---------|------|---------|---------|
+| `sessions_yield` | 结束当前轮次以接收子代理结果 | `sessions` | `["coding"]` |
+| `subagents` | 管理子代理 | `sessions` | `["coding"]` |
+
+**Agents Section 新增**：
+
+| 工具 ID | 描述 | Section | Profiles |
+|---------|------|---------|---------|
+| `agents_list` | 列出 agents | `agents` | `[]` |
+
+### 新增 Tool Section
+
+`CORE_TOOL_SECTION_ORDER` 新增：
+- `{ id: "agents", label: "Agents" }` — agents 管理工具
+- `{ id: "media", label: "Media" }` — 媒体工具（image/tts/image_generate）
+
+### Tool Profile 变化
+
+- `web_search` 和 `web_fetch`：`profiles: ["coding"]`（之前可能为空）
+- `sessions_spawn`：`profiles: ["coding"]`（新增）
+- `sessions_yield`：`profiles: ["coding"]`（新增）
+
+### /tools 命令（全新）
+
+`feat: add /tools runtime availability view`：
+- 新增 `/tools` 命令，展示当前运行时所有可用工具
+- 按 section 分组显示（Files/Runtime/Web/Memory/Sessions/UI/Messaging/Automation/Nodes/Agents/Media）
+- 显示每个工具的 profile 归属和实时可用状态

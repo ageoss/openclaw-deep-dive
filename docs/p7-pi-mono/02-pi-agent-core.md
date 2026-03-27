@@ -558,3 +558,28 @@ execute: async (toolCallId, params, signal, onUpdate) => {
 
 - [Pi-Agent-Core README](https://github.com/badlogic/pi-mono/tree/main/packages/agent)
 - [Agent API 文档](https://github.com/badlogic/pi-mono/tree/main/packages/agent/README.md)
+
+---
+
+## 最新更新（2026-03-24）
+
+### OpenClaw 嵌入式调用方式
+
+OpenClaw 不是继承 Agent 类，而是通过 `createAgentSession()` 嵌入式调用，并通过 `pi-embedded-subscribe.ts` 订阅事件：
+
+```
+pi-embedded-runner.ts
+  └── createAgentSession()  ← 调用 pi-agent-core
+  └── pi-embedded-subscribe.ts  ← 订阅事件流
+      ├── handlers.messages.ts  ← 消息处理
+      ├── handlers.tools.ts     ← 工具处理
+      ├── handlers.lifecycle.ts ← 生命周期
+      └── handlers.compaction.ts ← compaction 处理（新增）
+```
+
+### 新增 Subagent 支持
+
+pi-agent-core 现在支持 subagent 嵌套调用：
+- `src/agents/subagent-spawn.ts` — 生成子代理（调用 `createAgentSession()`）
+- `src/agents/subagent-registry.ts` — 管理所有子代理运行状态
+- 深度限制：`src/agents/subagent-depth.ts`

@@ -134,3 +134,9 @@ OpenClaw 在此基础上构建了：
 - [Pi-Mono GitHub](https://github.com/badlogic/pi-mono)
 - [官方文档](https://shittycodingagent.ai)
 - [Discord 社区](https://discord.com/invite/3cU7Bz4UPx)
+
+---
+
+## 最新更新（2026-03-24）
+
+本章节内容相对稳定。pi-mono 仓库路径：`/Users/rainleon/data/devSpace/ageoss/openclaw_space/pi-mono/`。主要变化体现在与 openclaw 主仓库的集成方式上，详见 08-MainAgent与pi-coding-agent关系.md 的更新说明。

@@ -614,3 +614,27 @@ const touchOutput: RunRegistry["touchOutput"] = (runId) => {
 ---
 
 *本文档基于源码分析，涵盖进程监控的架构、双重超时机制、进程树终止、PTY/子进程适配器、运行注册表、作用域管理以及平台差异处理。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Bash Process Registry（全新）
+
+`src/agents/bash-process-registry.ts` — bash 进程注册表：
+- 跟踪所有活跃的 bash 进程
+- 支持进程查找和批量终止
+
+### Bash Tools Process Supervisor（全新）
+
+`src/agents/bash-tools.process.supervisor.ts` — bash 工具进程监控器：
+- 监控 bash 工具执行的进程
+- 处理超时和异常终止
+
+### PTY 相关新增
+
+- `bash-tools.exec.pty.ts` — PTY 执行
+- `bash-tools.exec.pty-fallback.ts` — PTY fallback 处理
+- `bash-tools.exec.pty-cleanup.ts` — PTY 清理
+- `pty-dsr.ts` — PTY DSR（Device Status Report）
+- `pty-keys.ts` — PTY 按键处理

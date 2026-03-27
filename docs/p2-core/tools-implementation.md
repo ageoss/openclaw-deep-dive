@@ -1078,3 +1078,33 @@ function hookInjectApiKey(toolName: string, params: unknown): BeforeToolCallHook
 ---
 
 *本文档持续更新中...*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Bash Tools 新增模块
+
+`src/agents/bash-tools.*.ts` 大幅扩展：
+
+- `bash-tools.exec-approval-request.ts` — 执行审批请求（用户确认）
+- `bash-tools.exec-approval-followup.ts` — 审批后续处理
+- `bash-tools.exec-foreground-failures.ts` — 前台失败处理
+- `bash-tools.exec-host-gateway.ts` — 宿主机 Gateway 执行
+- `bash-tools.exec-host-node.ts` — 宿主机 Node 执行
+- `bash-tools.exec-host-shared.ts` — 共享执行逻辑
+- `bash-tools.exec-runtime.ts` — 运行时执行
+- `bash-tools.process.ts` — 进程管理（poll timeout, send keys）
+- `bash-tools.process.supervisor.ts` — 进程监控器
+
+### Tool Display 新增
+
+- `src/agents/tool-display.ts` — 工具显示格式化
+- `src/agents/tool-display-overrides.json` — 显示覆盖配置
+- `src/agents/tool-description-summary.ts` — 工具描述摘要
+
+### Tool Images 处理（全新）
+
+`src/agents/tool-images.ts`：
+- 处理工具返回的图片（base64/URL）
+- 图片清理和脱敏（`image-sanitization.ts`）

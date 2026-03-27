@@ -528,3 +528,91 @@ export function expectConvertedRoles(contents: Array<{ role?: string }>, expecte
 ---
 
 *本文档基于源码分析，涵盖Providers提供商集成的OAuth流程、模型定义系统、测试辅助工具以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Extensions 架构全面扩展
+
+extensions 目录现有 **85 个扩展**，相比原文档大幅增加。按类型分类：
+
+**AI Provider（新增）**：
+
+| Provider | 说明 |
+|----------|------|
+| `anthropic-vertex` | GCP Vertex AI 上的 Claude（`feat: add anthropic-vertex provider`） |
+| `xai` | xAI Grok，支持 fast mode（`feat(xai): support fast mode`） |
+| `minimax` | 支持 fast mode，同步 pi defaults（`feat(minimax): support fast mode`） |
+| `mistral` | 精选 catalog 模型（`feat(mistral): add curated catalog models`） |
+| `modelstudio` | DashScope 标准按量付费端点（`feat(modelstudio): add standard DashScope endpoints`） |
+| `chutes` | bundled extension（`feat: add bundled Chutes extension`） |
+| `byteplus` | BytePlus（火山引擎国际版） |
+| `cloudflare-ai-gateway` | Cloudflare AI Gateway 代理 |
+| `copilot-proxy` | Copilot 代理 |
+| `groq` | Groq 高速推理 |
+| `huggingface` | HuggingFace Inference API |
+| `kilocode` | Kilo Code |
+| `kimi-coding` | Kimi 编程模型 |
+| `nvidia` | NVIDIA NIM |
+| `opencode` / `opencode-go` | OpenCode |
+| `openrouter` | OpenRouter 聚合 |
+| `perplexity` | Perplexity AI |
+| `qianfan` | 百度千帆 |
+| `sglang` | SGLang 推理框架 |
+| `together` | Together AI |
+| `venice` | Venice AI |
+| `vercel-ai-gateway` | Vercel AI Gateway |
+| `vllm` | vLLM 本地推理 |
+| `volcengine` | 火山引擎（国内） |
+| `xiaomi` | 小米 MiMo V2 Pro/Omni（`feat(xiaomi): add MiMo V2 Pro and MiMo V2 Omni`） |
+| `zai` | ZAI |
+
+**工具能力 Extension（新增）**：
+
+| Extension | 说明 |
+|-----------|------|
+| `brave` | Brave Search |
+| `firecrawl` | Firecrawl 网页抓取 |
+| `exa` | Exa 语义搜索 |
+| `duckduckgo` | DuckDuckGo（无需 API Key） |
+| `tavily` | Tavily 搜索（`feat: add Tavily as a bundled web search plugin`） |
+| `memory-core` | 核心记忆系统 |
+| `memory-lancedb` | LanceDB 向量存储 |
+| `elevenlabs` | ElevenLabs TTS |
+| `deepgram` | Deepgram 语音识别/TTS |
+| `fal` | fal.ai 图像生成 |
+| `talk-voice` | 语音对话 |
+| `voice-call` | 语音通话 |
+| `phone-control` | 手机控制 |
+| `llm-task` | LLM 任务 |
+| `open-prose` | 文本生成 |
+| `openshell` | Shell 执行 |
+| `diffs` | 差异对比 |
+| `diagnostics-otel` | OpenTelemetry 诊断 |
+| `device-pair` | 设备配对 |
+| `acpx` | ACP 扩展 |
+| `amazon-bedrock` | AWS Bedrock |
+| `thread-ownership` | 线程所有权 |
+| `synthetic` | 合成数据 |
+| `lobster` | Lobster |
+
+### Anthropic Vertex Provider 详解
+
+`src/agents/anthropic-vertex-provider.ts` 实现 GCP Vertex AI 上的 Claude：
+- 通过 `hasAnthropicVertexAvailableAuth()` 检测 GCP 认证可用性
+- 支持 `ANTHROPIC_VERTEX_PROJECT_ID` 和 `ANTHROPIC_VERTEX_REGION` 环境变量
+- `src/agents/anthropic-vertex-stream.ts` 处理流式响应
+
+### GitHub Copilot 动态模型 ID 解析
+
+`feat(github-copilot): resolve any model ID dynamically`：
+- 不再硬编码模型 ID，通过 API 动态解析
+- `src/agents/github-copilot-token.ts` 管理 Copilot token
+
+### Provider Discovery 系统
+
+`src/plugins/provider-discovery.ts` 新增 provider 发现机制：
+- `ProviderDiscoveryOrder` 类型：`simple | profile | paired | late`
+- 支持插件动态注册 provider
+- `groupPluginDiscoveryProvidersByOrder()` 按优先级分组

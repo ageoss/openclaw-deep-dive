@@ -1012,4 +1012,35 @@ GATEWAY_EVENTS = [
 
 ---
 
-**文档版本：2026-03-19 | By Leon**
+**文档版本：2026-03-19（更新：2026-03-24）| By Leon**
+
+---
+
+## 最新更新（2026-03-24）
+
+### Agent Events 广播（全新）
+
+`feat: broadcast agent events over control channel`：
+- `src/gateway/server-broadcast.ts` — 通过 control channel 广播 agent 事件
+- `feat: stream tool/job events over control channel` — 工具/job 事件流式传输
+- `feat: forward tool/assistant events to agent bus` — 工具/助手事件转发到 agent bus
+- `feat: emit job-state events from rpc` — RPC 触发 job-state 事件
+
+### Talk Speak RPC（全新）
+
+`feat(gateway): add talk speak rpc`：
+- 新增 `talk.speak` RPC 方法
+- 允许通过 Gateway RPC 触发 TTS 语音合成
+
+### OpenAI 兼容事件格式
+
+`feat(gateway): make openai compatibility agent-first`：
+- `/v1/chat/completions` 端点支持 SSE 流式事件
+- 事件格式遵循 OpenAI API 规范（`data: {"choices": [{"delta": {...}}]}`）
+- 支持 `[DONE]` 终止标记
+
+### Instances Beacon（全新）
+
+`feat(instances): beacon on connect and relay self-entry`：
+- 实例连接时发送 beacon 事件
+- 支持多实例发现和状态同步

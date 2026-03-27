@@ -514,3 +514,54 @@ agent:<agentId>:<channel>:<type>:<peerId>[:<subId>]
 ---
 
 *本文档基于源码分析，涵盖会话管理的架构、发送策略、模型覆盖、会话标签、会话键推导以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Session Transcript Repair（全新）
+
+`src/agents/session-transcript-repair.ts` 实现 transcript 修复：
+- `repairToolUseResultPairing()` — 修复工具调用/结果配对不一致
+- `stripToolResultDetails()` — 剥离工具结果详情（用于 compaction）
+- 处理 session JSONL 中的损坏条目
+
+### Session Write Lock（全新）
+
+`src/agents/session-write-lock.ts` 实现写锁：
+- 防止多个进程同时写入同一 session 文件
+- 基于文件锁实现（跨进程安全）
+
+### Session File Repair（全新）
+
+`src/agents/session-file-repair.ts` 实现文件修复：
+- 检测并修复损坏的 session JSONL 文件
+- 截断无效的尾部数据
+
+### Session Tool Result Guard（全新）
+
+`src/agents/session-tool-result-guard.ts` 实现工具结果守卫：
+- 防止敏感工具结果泄露到 session 历史
+- `session-tool-result-guard-wrapper.ts` — 包装器实现
+- `session-tool-result-state.ts` — 状态管理
+
+### 确定性 Session Keys（最新修复）
+
+最新 3 个 commit 修复了 session key 确定性问题：
+- `fix: prefer deterministic transcript session keys`
+- `fix: prefer deterministic session usage targets`
+- `fix: prefer deterministic session id resume targets`
+
+确保 session key 在进程重启后保持一致，避免 subagent 状态丢失。
+
+### Multi-Session 选择和删除（UI）
+
+`feat(ui): add multi-session selection and deletion`：
+- Control UI 支持批量选择多个 session
+- 支持批量删除 session
+
+### Session Slug（新增）
+
+`src/agents/session-slug.ts` — session 友好名称生成：
+- 为 session 生成可读的 slug（如 `dynamic-tickling-torvalds`）
+- 用于日志和 UI 显示

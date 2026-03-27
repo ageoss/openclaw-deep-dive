@@ -128,3 +128,9 @@ await stream(model, messages);
 
 - [Pi-Pods 源码](https://github.com/badlogic/pi-mono/tree/main/packages/pods)
 - [vLLM 文档](https://docs.vllm.ai/)
+
+---
+
+## 最新更新（2026-03-24）
+
+本章节内容相对稳定。pi-mono 仓库路径：`/Users/rainleon/data/devSpace/ageoss/openclaw_space/pi-mono/`。主要变化体现在与 openclaw 主仓库的集成方式上，详见 08-MainAgent与pi-coding-agent关系.md 的更新说明。

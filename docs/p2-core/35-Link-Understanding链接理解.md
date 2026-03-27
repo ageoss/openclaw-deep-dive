@@ -543,3 +543,20 @@ tools:
 ---
 
 *本文档基于源码分析，涵盖链接理解系统的架构、链接检测、CLI 执行、作用域策略、模型回退以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Media Understanding 移入 Vendor Plugins
+
+`feat(plugins): move media understanding into vendor plugins`：
+- 媒体理解（包括链接理解）从核心模块移入 vendor plugin 体系
+- `feat(plugins): add media understanding provider registration` — 插件可注册媒体理解 provider
+- `feat(plugins): tighten media runtime integration` — 收紧媒体运行时集成
+
+### 图像生成路由
+
+`feat(media): route image tool through media providers`：
+- 图像工具现在通过 media provider 路由
+- 与链接理解共享同一套 media provider 注册机制

@@ -983,3 +983,9 @@ export function runStateMigrations(data: unknown): unknown {
 ---
 
 *本文档基于源码分析，涵盖基础设施层的架构、执行安全、包装器解析、边界保护、网络子系统以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+本章节内容相对稳定，主要变化体现在与新功能的集成上。详见相关章节（Gateway、Plugin SDK、Commands）的更新说明。

@@ -617,3 +617,28 @@ Invalid? → Throw Error
 ---
 
 *本文档基于源码分析，涵盖 LINE 通道的架构、Flex 模板、Rich Menu、模板消息、Webhook 处理、Bot handlers 以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### LINE 渠道迁移为独立 Extension
+
+LINE 渠道从 `src/channels/line/` 迁移为独立 extension 包 `extensions/line/`：
+
+- `extensions/line/src/channel.ts` — 渠道主入口（`linePlugin`，使用 `createChatChannelPlugin()`）
+- `extensions/line/src/channel-shared.ts` — `lineChannelPluginCommon`
+- `extensions/line/src/group-policy.ts` — `resolveLineGroupRequireMention`
+- `extensions/line/src/runtime.ts` — `getLineRuntime()`
+- `extensions/line/src/setup-surface.ts` — `lineSetupWizard`
+- `extensions/line/src/signature.ts` — Webhook 签名验证
+- `extensions/line/src/rich-menu.ts` — Rich Menu 操作
+- `extensions/line/src/template-messages.ts` — 模板消息
+- `extensions/line/src/reply-chunks.ts` — 回复分块
+- `extensions/line/src/send.ts` — 发送逻辑
+- `extensions/line/src/webhook.ts` / `webhook-node.ts` — Webhook 处理
+- `extensions/line/src/bot-handlers.ts` — Bot 事件处理
+- `extensions/line/src/auto-reply-delivery.ts` — 自动回复投递
+- `extensions/line/src/channel-access-token.ts` — Channel Access Token 管理
+
+安全适配器：`createRestrictSendersChannelSecurity`，支持 dmPolicy/groupPolicy/allowFrom

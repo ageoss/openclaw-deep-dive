@@ -790,3 +790,79 @@ A：
 ---
 
 *本文档基于源码分析，涵盖 Plugin SDK、Hook 系统、命令注册、配置验证等核心组件。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### ClawHub 插件安装流程（全新）
+
+`feat!: prefer clawhub plugin installs before npm` + `feat: add native clawhub install flows`：
+
+- `src/agents/skills-clawhub.ts` — ClawHub 技能安装核心
+- `src/agents/skills-install.ts` — 安装流程（下载、解压、验证）
+- `src/agents/skills-install-download.ts` — 下载逻辑
+- `src/agents/skills-install-extract.ts` — 解压逻辑
+- `src/agents/skills-install-output.ts` — 输出格式化
+- `src/agents/skills-install-tar-verbose.ts` — tar 详细输出
+
+安装优先级：ClawHub > npm（breaking change）
+
+### Slash Plugin Installs（全新）
+
+`feat: add slash plugin installs`：
+- 支持通过 `/plugin install <name>` 命令安装插件
+- `feat(cli): unify hook pack installs under plugins` — hook pack 安装统一到 plugins 命令
+
+### 新增 Plugin SDK 能力模块
+
+`src/plugin-sdk/` 目录新增大量能力模块：
+
+**媒体能力**：
+- `image-generation.ts` + `image-generation-core.ts` + `image-generation-runtime.ts` — 图像生成（`feat(plugins): add image generation capability`）
+- `media-understanding.ts` + `media-understanding-runtime.ts` — 媒体理解（`feat(plugins): add media understanding provider registration`）
+- `speech.ts` + `speech-core.ts` + `speech-runtime.ts` — 语音合成（`feat(plugins): add speech provider registration`）
+
+**Web Search 能力**：
+- `provider-web-search.ts` — Web 搜索 provider 接口（`feat(plugins): add web search runtime capability`）
+
+**其他新增**：
+- `acpx.ts` — ACP 扩展
+- `diagnostics-otel.ts` — OpenTelemetry 诊断
+- `diffs.ts` — 差异对比
+- `llm-task.ts` — LLM 任务
+- `lobster.ts` — Lobster
+- `open-prose.ts` — 文本生成
+- `phone-control.ts` — 手机控制
+- `talk-voice.ts` — 语音对话
+- `voice-call.ts` — 语音通话
+- `thread-ownership.ts` — 线程所有权
+- `copilot-proxy.ts` — Copilot 代理
+- `provider-zai-endpoint.ts` — ZAI 端点
+
+### 新增渠道 SDK 模块
+
+新增渠道的 SDK 支持：
+- `msteams.ts` — Microsoft Teams
+- `matrix.ts` + `matrix-runtime-heavy.ts` + `matrix-runtime-shared.ts` — Matrix
+- `nextcloud-talk.ts` — Nextcloud Talk
+- `nostr.ts` — Nostr
+- `tlon.ts` — Tlon
+- `twitch.ts` — Twitch
+- `irc.ts` — IRC
+- `zalo.ts` + `zalouser.ts` — Zalo
+- `googlechat.ts` — Google Chat
+- `mattermost.ts` — Mattermost
+
+### Claude Bundle Commands 原生注册
+
+`feat(plugins): register claude bundle commands natively`：
+- Claude bundle 命令现在通过 plugin SDK 原生注册
+- `src/plugins/bundle-commands.ts` — bundle 命令注册
+
+### Provider Discovery 系统
+
+`src/plugins/provider-discovery.ts` 新增 provider 发现机制：
+- `ProviderDiscoveryOrder` 类型：`simple | profile | paired | late`
+- 支持插件动态注册 provider
+- `feat(plugins): derive bundled web search providers from plugins` — web search provider 从插件派生

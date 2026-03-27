@@ -718,3 +718,32 @@ await client.request("ping", {}, { timeoutMs: 3000 });
 ---
 
 *本文档基于源码分析，涵盖 iMessage 通道的架构、RPC 客户端、反射守卫、回声缓存、出站清理、入站处理、Monitor provider 以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### iMessage 渠道迁移为独立 Extension
+
+iMessage 渠道迁移为独立 extension 包 `extensions/imessage/`：
+
+- `extensions/imessage/src/channel.ts` — 渠道主入口（`imessagePlugin`，使用 `createChatChannelPlugin()`）
+- `extensions/imessage/src/channel.runtime.ts` — 运行时（延迟加载）
+- `extensions/imessage/src/client.ts` — RPC 客户端
+- `extensions/imessage/src/monitor/` — 监控子目录
+- `extensions/imessage/src/group-policy.ts` — 群组策略
+- `extensions/imessage/src/probe.ts` — 连接探测
+- `extensions/imessage/src/outbound-adapter.ts` — 出站适配器
+- `extensions/imessage/src/targets.ts` — 目标解析（`parseIMessageTarget`、`normalizeIMessageHandle`、`inferIMessageTargetChatType`）
+
+路由系统：使用 `buildOutboundBaseSessionKey`、`RoutePeer`，与 plugin-sdk 路由系统集成
+
+### BlueBubbles 新渠道（全新）
+
+`extensions/bluebubbles/` — BlueBubbles 是 macOS 上的 iMessage 服务器方案，提供 REST API 和 WebSocket 接口，作为 iMessage 的替代接入方式：
+
+- `extensions/bluebubbles/src/channel.ts` — 渠道实现
+- `extensions/bluebubbles/src/chat.ts` — 聊天管理
+- `extensions/bluebubbles/src/attachments.ts` — 附件处理
+- `extensions/bluebubbles/src/actions.ts` — 消息操作（发送/回复/反应）
+- `extensions/bluebubbles/src/group-policy.ts` — 群组策略

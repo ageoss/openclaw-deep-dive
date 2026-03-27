@@ -1920,5 +1920,70 @@ OpenClaw 的 Context 生态设计**非常成熟**。作者没有追求"一步到
 
 ---
 
-**文档版本：2026-03-19 | By Leon**
+**文档版本：2026-03-19（更新：2026-03-24）| By Leon**
 **基于源码分析：src/context-engine/*, src/agents/context.ts, src/agents/context-window-guard.ts, src/agents/sandbox/context.ts, pi-mono/packages/coding-agent/src/core/extensions/types.ts**
+
+---
+
+## 最新更新（2026-03-24）
+
+### ContextEngine 接口新增方法
+
+**`maintain()` 方法（全新）**
+
+在 bootstrap、成功轮次或 compaction 后运行 transcript 维护。引擎可通过 `runtimeContext.rewriteTranscriptEntries()` 请求安全的 branch-and-reappend transcript 重写，无需依赖 Pi 内部实现。
+
+```typescript
+maintain?(params: {
+  sessionId: string;
+  sessionKey?: string;
+  sessionFile: string;
+  runtimeContext?: ContextEngineRuntimeContext;
+}): Promise<ContextEngineMaintenanceResult>;
+```
+
+**`assemble()` 新增参数**（`feat: pass modelId to context engine assemble()` + `feat(context-engine): pass incoming prompt to assemble`）
+
+```typescript
+assemble(params: {
+  // ...原有参数...
+  model?: string;   // 当前模型 ID（如 "claude-opus-4", "gpt-4o"）
+  prompt?: string;  // 当前轮次的用户 prompt（用于检索型引擎）
+}): Promise<AssembleResult>;
+```
+
+### 新增类型（src/context-engine/types.ts）
+
+```typescript
+type TranscriptRewriteReplacement = {
+  entryId: string;       // 要替换的 transcript entry ID
+  message: AgentMessage; // 替换内容
+};
+
+type TranscriptRewriteRequest = {
+  replacements: TranscriptRewriteReplacement[];
+};
+
+type TranscriptRewriteResult = {
+  changed: boolean;         // 活跃分支是否发生变化
+  bytesFreed: number;       // 从活跃分支释放的字节数
+  rewrittenEntries: number; // 重写的 transcript 条目数
+  reason?: string;          // 未发生重写时的原因
+};
+
+type ContextEngineMaintenanceResult = TranscriptRewriteResult;
+
+type ContextEngineRuntimeContext = Record<string, unknown> & {
+  rewriteTranscriptEntries?: (
+    request: TranscriptRewriteRequest,
+  ) => Promise<TranscriptRewriteResult>;
+};
+```
+
+### Compaction Delegate Helper（全新）
+
+`src/context-engine/delegate.ts` 新增 `delegateCompactionToRuntime()` helper（`feat: expose context-engine compaction delegate helper`）：允许 context engine 插件将 compaction 委托给运行时处理，无需自行实现完整的压缩逻辑。
+
+### Compaction 截断优化
+
+`feat(compaction): truncate session JSONL after compaction to prevent unbounded growth`：compaction 完成后截断 session JSONL 文件，防止历史记录无限增长。保留 compaction 摘要作为历史起点。

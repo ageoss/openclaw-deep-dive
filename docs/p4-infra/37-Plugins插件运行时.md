@@ -916,3 +916,71 @@ For Each Plugin (reverse order):
 ---
 
 *本文档基于源码分析，涵盖插件运行时的架构、插件发现、加载流程、Hooks 系统、服务管理以及技术权衡。*
+
+---
+
+## 最新更新（2026-03-24）
+
+### Bundled Plugin Metadata（全新）
+
+`src/plugins/bundled-plugin-metadata.ts` 实现 bundled plugin 元数据管理：
+
+```typescript
+type GeneratedBundledPluginMetadata = {
+  dirName: string;
+  idHint: string;
+  source: { source: string; built: string };
+  setupSource?: { source: string; built: string };
+  packageName?: string;
+  packageVersion?: string;
+  packageDescription?: string;
+  packageManifest?: OpenClawPackageManifest;
+  manifest: PluginManifest;
+};
+```
+
+- `bundled-plugin-metadata.generated.ts` — 自动生成的元数据（构建时生成）
+- `resolveBundledPluginGeneratedPath()` — 解析 bundled plugin 路径（优先 built，fallback source）
+
+### Bundle Manifest（全新）
+
+`src/plugins/bundle-manifest.ts` 支持多种 bundle 格式：
+- Codex bundle
+- Claude bundle
+- Cursor bundle
+
+### Bundle MCP（全新）
+
+`src/plugins/bundle-mcp.ts` — MCP（Model Context Protocol）工具捆绑：
+- 将 MCP 工具注册到 plugin 运行时
+- 支持 MCP stdio 传输
+
+### Bundle LSP（全新）
+
+`src/plugins/bundle-lsp.ts` — LSP（Language Server Protocol）捆绑：
+- 将 LSP 功能集成到 plugin 运行时
+
+### Provider Discovery 系统（全新）
+
+`src/plugins/provider-discovery.ts` 实现 provider 发现机制：
+
+```typescript
+type ProviderDiscoveryOrder = "simple" | "profile" | "paired" | "late";
+```
+
+- `groupPluginDiscoveryProvidersByOrder()` — 按优先级分组
+- `normalizePluginDiscoveryResult()` — 标准化发现结果
+- `resolvePluginDiscoveryProviders()` — 解析 provider 列表
+- `runProviderCatalog()` — 运行 provider catalog
+
+### Bundled Web Search Providers（全新）
+
+`feat(plugins): derive bundled web search providers from plugins`：
+- `src/bundled-web-search-registry.ts` — bundled web search provider 注册表
+- Web search provider 从插件派生，不再硬编码
+
+### Claude Bundle Commands 原生注册
+
+`feat(plugins): register claude bundle commands natively`：
+- `src/plugins/bundle-commands.ts` — bundle 命令注册
+- Claude bundle 命令通过 plugin SDK 原生注册，不再需要特殊处理

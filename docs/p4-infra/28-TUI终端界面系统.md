@@ -751,3 +751,9 @@ export function createBackspaceDeduper(params?: {
 ---
 
 *本文档基于源码分析，涵盖TUI终端界面系统的完整架构、状态管理、消息流处理、命令系统、overlay机制以及性能优化。*
+
+---
+
+## 最新更新（2026-03-24）
+
+本章节内容相对稳定，主要变化体现在与新功能的集成上。详见相关章节（Gateway、Plugin SDK、Commands）的更新说明。

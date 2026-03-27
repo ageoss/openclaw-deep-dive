@@ -934,8 +934,86 @@ AI 请求工具调用
 
 ---
 
+## 最新更新（2026-03-24）
+
+### Subagent 系统（全新）
+
+新增完整的 Subagent 注册表系统，支持多层嵌套子代理：
+
+- `src/agents/subagent-registry.ts` — 注册表核心，管理所有子代理运行状态
+- `src/agents/subagent-registry-queries.ts` — 查询接口（按 session key、controller、requester 查询）
+- `src/agents/subagent-registry-state.ts` — 状态持久化（磁盘读写）
+- `src/agents/subagent-registry-cleanup.ts` — 清理策略（deferred cleanup decision）
+- `src/agents/subagent-registry-completion.ts` — 完成处理（lifecycle outcome 解析）
+- `src/agents/subagent-spawn.ts` — 子代理生成（附件、模型、workspace 继承）
+- `src/agents/subagent-announce.ts` — 结果通知（announce flow、completion reply 捕获）
+- `src/agents/subagent-announce-queue.ts` — 通知队列（防止并发冲突）
+- `src/agents/subagent-announce-dispatch.ts` — 通知分发
+- `src/agents/subagent-depth.ts` — 深度限制（防止无限嵌套）
+- `src/agents/subagent-orphan-recovery.ts` — 孤儿恢复（进程重启后恢复子代理状态）
+- `src/agents/subagent-lifecycle-events.ts` — 生命周期事件（KILLED/COMPLETE/ERROR）
+- `src/agents/subagent-control.ts` — 控制接口（steer/restart）
+- `src/agents/subagent-capabilities.ts` — 能力声明
+
+新增工具：
+- `sessions_spawn` — 生成子代理（`sectionId: "sessions"`, `profiles: ["coding"]`）
+- `sessions_yield` — 结束当前轮次以接收子代理结果（`sectionId: "sessions"`, `profiles: ["coding"]`）
+- `subagents` — 管理子代理（`sectionId: "sessions"`, `profiles: ["coding"]`）
+
+### Compaction 模块（全新）
+
+`src/agents/compaction.ts` 实现会话历史压缩：
+
+- `BASE_CHUNK_RATIO = 0.4` — 基础分块比例
+- `MIN_CHUNK_RATIO = 0.15` — 最小分块比例
+- `SAFETY_MARGIN = 1.2` — 20% token 估算缓冲
+- 标识符保留策略（`identifierPolicy: "strict" | "off" | "custom"`）：严格模式下保留所有 UUID、hash、token、URL、文件名等不透明标识符
+- 多块摘要合并（`MERGE_SUMMARIES_INSTRUCTIONS`）：优先保留活跃任务状态、批量操作进度、最近用户请求
+- 压缩后截断 session JSONL 防止无限增长（`feat(compaction): truncate session JSONL after compaction`）
+- 压缩开始/完成时通知用户（`feat: notify user when context compaction starts and completes`）
+
+### Auth Profiles 系统（全新）
+
+`src/agents/auth-profiles/` 目录实现多 API key 轮换：
+
+- `profiles.ts` — profile 增删改查（`upsertAuthProfile`, `listProfilesForProvider`）
+- `usage.ts` — 使用统计与冷却（`markAuthProfileFailure`, `markAuthProfileCooldown`, `getSoonestCooldownExpiry`）
+- `order.ts` — 优先级排序（`resolveAuthProfileOrder`, `resolveAuthProfileEligibility`）
+- `store.ts` — 持久化存储（`ensureAuthProfileStore`, `saveAuthProfileStore`）
+- `oauth.ts` — OAuth 凭据解析（`resolveApiKeyForProfile`）
+- `repair.ts` — profile ID 修复（`repairOAuthProfileIdMismatch`）
+- `doctor.ts` — 诊断提示（`formatAuthDoctorHint`）
+
+支持的凭据类型：`ApiKeyCredential`, `OAuthCredential`, `TokenCredential`
+
+### Skills 系统（全新）
+
+`src/agents/skills.ts` 及相关文件实现 workspace skills：
+
+- `skills-clawhub.ts` — ClawHub 技能安装（优先于 npm，`feat!: prefer clawhub plugin installs before npm`）
+- `skills-install.ts` — 安装流程（下载、解压、验证）
+- `skills-status.ts` — 状态查询
+- `skills.buildworkspaceskillsnapshot.ts` — workspace skill 快照
+- `skills.resolveskillspromptforrun.ts` — 运行时 skill prompt 解析
+
+### 图像生成工具（全新）
+
+新增 `image_generate` 工具（`feat(agents): infer image generation defaults`）：
+- `sectionId: "media"`, `profiles: ["coding"]`
+- 通过 `src/image-generation/` 模块路由到 image generation provider
+- 支持 fal、google 等 image generation extension
+
+### /tools 运行时可用性视图（全新）
+
+`feat: add /tools runtime availability view`：
+- 新增 `/tools` 命令，展示当前运行时可用的所有工具
+- 按 section 分组显示（Files/Runtime/Web/Memory/Sessions/UI/Messaging/Automation/Nodes/Agents/Media）
+- 显示每个工具的 profile 归属和可用状态
+
+---
+
 **文档元信息**：
 - 分析者：Leon
-- 分析日期：2026-03-10
-- 分析对象：OpenClaw commit cf9db91b6
+- 分析日期：2026-03-10（更新：2026-03-24）
+- 分析对象：OpenClaw commit cf9db91b6（更新至最新）
 - 分析方法：源码静态分析 + 架构推断
