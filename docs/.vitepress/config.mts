@@ -20,7 +20,7 @@ export default withMermaid({
       { text: '工程实践', link: '/p5-practice/17-配置系统' },
       { text: '高级专题', link: '/p6-advanced/canvas' },
       { text: 'Pi-Mono', link: '/p7-pi-mono/' },
-      { text: 'GitHub', link: 'https://github.com/rainleon/openclaw-deep-dive' }
+      { text: 'GitHub', link: 'https://github.com/ageoss/openclaw-deep-dive' }
     ],
     sidebar: [
       {
